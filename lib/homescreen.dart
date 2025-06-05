@@ -1,0 +1,250 @@
+import 'package:flutter/material.dart';
+
+class HomescreenPage extends StatelessWidget {
+  const HomescreenPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Header
+            Stack(
+              children: [
+                // Background Image
+                Container(
+                  width: double.infinity,
+                  height: 240,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF1E3A8A), Color(0xFF3B82F6)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                ),
+                // Overlay (simulasi opacity-90)
+                Container(
+                  width: double.infinity,
+                  height: 240,
+                  color: Colors.black.withOpacity(0.1),
+                ),
+                // Teks Hero
+                Positioned(
+                  left: 24,
+                  top: 80,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'HAI WARGA PARAMADINA!\nMAU KEMANA NIH?',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Tombol Search
+                Positioned(
+                  top: 32,
+                  right: 16,
+                  child: Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                    elevation: 2,
+                    child: IconButton(
+                      icon: Image.asset('assets/png/Untitled.png', width: 20, height: 20),
+                      onPressed: () {
+                        // Tambahkan logika pencarian di sini
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            // Konten
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Judul "Gedung Kampus"
+                  const Text(
+                    'Gedung Kampus',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Kartu Kampus Cipayung
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/mainmenu');
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset(
+                              'assets/png/cipayung.png',
+                              width: double.infinity,
+                              height: 153,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const Positioned(
+                            bottom: 16,
+                            right: 12,
+                            child: Text(
+                              'KAMPUS CIPAYUNG',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Kartu Kampus Cikarang
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.asset(
+                            'png/cikarang.png',
+                            width: double.infinity,
+                            height: 153,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const Positioned(
+                          bottom: 16,
+                          right: 12,
+                          child: Text(
+                            'KAMPUS CIKARANG',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Kartu Kampus Trinity
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.asset(
+                            'png/kuningan.png',
+                            width: double.infinity,
+                            height: 153,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const Positioned(
+                          bottom: 16,
+                          right: 12,
+                          child: Text(
+                            'KAMPUS TRINITY',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Notifikasi
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.red, width: 2),
+                    ),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'assets/png/toilet.png',
+                          width: 40,
+                          height: 40,
+                        ),
+                        const SizedBox(width: 16),
+                        const Expanded(
+                          child: Text(
+                            'Toilet Gedung C dan D sedang dalam perbaikan untuk sementara gunakan toilet Gedung A.',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
