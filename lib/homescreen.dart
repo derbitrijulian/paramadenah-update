@@ -12,25 +12,9 @@ class HomescreenPage extends StatelessWidget {
             // Header
             Stack(
               children: [
-                // Background Image
-                Container(
-                  width: double.infinity,
-                  height: 240,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF1E3A8A), Color(0xFF3B82F6)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                  ),
+              Image.asset(
+                  'png/Heroo.png'
                 ),
-                // Overlay (simulasi opacity-90)
-                Container(
-                  width: double.infinity,
-                  height: 240,
-                  color: Colors.black.withOpacity(0.1),
-                ),
-                // Teks Hero
                 Positioned(
                   left: 24,
                   top: 80,
@@ -41,7 +25,7 @@ class HomescreenPage extends StatelessWidget {
                         'HAI WARGA PARAMADINA!\nMAU KEMANA NIH?',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 18,
+                          fontSize: 24,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -66,30 +50,27 @@ class HomescreenPage extends StatelessWidget {
                 ),
               ],
             ),
-            // Konten
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Judul "Gedung Kampus"
                   const Text(
                     'Gedung Kampus',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 16),
                   // Kartu Kampus Cipayung
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/mainmenu');
+                      Navigator.pushNamed(context, '/kampus_cipayung');
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(
@@ -111,15 +92,22 @@ class HomescreenPage extends StatelessWidget {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          const Positioned(
+                          Positioned(
                             bottom: 16,
                             right: 12,
-                            child: Text(
-                              'KAMPUS CIPAYUNG',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: const Text(
+                                'KAMPUS CIPAYUNG',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
@@ -131,7 +119,6 @@ class HomescreenPage extends StatelessWidget {
                   // Kartu Kampus Cikarang
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
                       boxShadow: [
                         BoxShadow(
@@ -153,15 +140,22 @@ class HomescreenPage extends StatelessWidget {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        const Positioned(
+                        Positioned(
                           bottom: 16,
                           right: 12,
-                          child: Text(
-                            'KAMPUS CIKARANG',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              'KAMPUS CIKARANG',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
@@ -194,15 +188,22 @@ class HomescreenPage extends StatelessWidget {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        const Positioned(
+                        Positioned(
                           bottom: 16,
                           right: 12,
-                          child: Text(
-                            'KAMPUS TRINITY',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              'KAMPUS TRINITY',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),

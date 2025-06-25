@@ -1,8 +1,26 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'auth.dart';
+import 'package:flutter/services.dart';
+import 'firebase_options.dart';
+import 'auth/auth_page.dart';
 import 'homescreen.dart';
+import 'notif.dart';
+import 'fasilitas.dart';
+import 'akun.dart';
+import 'splash.dart';
+import 'kampus_cipayung.dart';
+import 'widgets/bottom_nav_bar.dart';
 
-void main() {
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    print('Firebase initialization failed: $e');
+  }
   runApp(const MyApp());
 }
 
@@ -16,25 +34,31 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/auth',
+      initialRoute: '/splash',
       routes: {
+        '/splash': (context) => const SplashScreen(),
         '/auth': (context) => const AuthPage(),
-        '/homescreen': (context) => const MainPage(),
-        '/mainmenu': (context) => const MainMenuPage(),
+        '/homescreen': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as int? ?? 0;
+          return MainPage(initialIndex: args);
+        },
+        '/kampus_cipayung': (context) => const KampusCipayungPage(),
       },
     );
   }
 }
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final int initialIndex;
+  const MainPage({super.key, this.initialIndex = 0});
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
+  late PageController _pageController;
 
   final List<Widget> _pages = const [
     HomescreenPage(),
@@ -44,119 +68,56 @@ class _MainPageState extends State<MainPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex.clamp(0, _pages.length - 1);
+    _pageController = PageController(initialPage: _selectedIndex);
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Color(0xFF075A8E),
+      statusBarIconBrightness: Brightness.light,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ));
+    super.dispose();
+  }
+
+  void _onItemTapped(int index) {
+    if (_selectedIndex != index) {
+      setState(() {
+        _selectedIndex = index;
+      });
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
+      body: PageView(
+        controller: _pageController,
         children: _pages,
+        physics: const NeverScrollableScrollPhysics(),
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
       ),
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 8,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildNavItem(context, 0, 'assets/png/rumah.png', 'Menu Utama'),
-            _buildNavItem(context, 1, 'assets/png/notif.png', 'Notifikasi'),
-            _buildNavItem(context, 2, 'assets/png/gedung.png', 'Fasilitas'),
-            _buildNavItem(context, 3, 'assets/png/profil.png', 'Profil'),
-          ],
-        ),
+      bottomNavigationBar: BottomNavBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
-    );
-  }
-
-  Widget _buildNavItem(
-      BuildContext context, int index, String iconPath, String label) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ImageIcon(
-              AssetImage(iconPath),
-              color: _selectedIndex == index ? Colors.blue[900] : Colors.black,
-              size: 24,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color: _selectedIndex == index ? Colors.blue[900] : Colors.black,
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class NotifPage extends StatelessWidget {
-  const NotifPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Notifikasi')),
-      body: const Center(
-          child: Text('Notifikasi Page', style: TextStyle(fontSize: 24))),
-    );
-  }
-}
-
-class FasilitasPage extends StatelessWidget {
-  const FasilitasPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Fasilitas')),
-      body: const Center(
-          child: Text('Fasilitas Page', style: TextStyle(fontSize: 24))),
-    );
-  }
-}
-
-class AkunPage extends StatelessWidget {
-  const AkunPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Profil')),
-      body: const Center(
-          child: Text('Profil Page', style: TextStyle(fontSize: 24))),
-    );
-  }
-}
-
-class MainMenuPage extends StatelessWidget {
-  const MainMenuPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Main Menu')),
-      body: const Center(
-          child: Text('Main Menu Page', style: TextStyle(fontSize: 24))),
     );
   }
 }

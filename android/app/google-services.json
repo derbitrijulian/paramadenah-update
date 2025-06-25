@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "985909607936",
+    "firebase_url": "https://paramadenah-708b7-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "paramadenah-708b7",
+    "storage_bucket": "paramadenah-708b7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985909607936:android:bcbd414af1e782eb7762e5",
+        "android_client_info": {
+          "package_name": "com.example.paramadenah_update"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985909607936-ob7hglt92kt1mv0rfrc6vc5jh6sg8idd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxVBdgit0XQnUzN4TEymPKjvmqhaMzyyQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "985909607936-ob7hglt92kt1mv0rfrc6vc5jh6sg8idd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "985909607936-monam64sjlr1lbrh6vboib5qr92jrrot.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.paramadenahUpdate"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

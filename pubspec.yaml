@@ -30,15 +30,24 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  flutter_svg: ^2.0.10
+  carousel_slider: ^5.0.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  firebase_core: ^3.14.0  # Versi terbaru yang stabil
+  firebase_analytics: ^11.5.0  # Versi terbaru
+  cloud_firestore: ^5.4.0  # Versi terbaru
+  firebase_database: ^11.1.0  # Versi terbaru
+  shared_preferences: ^2.2.3  # Versi terbaru
+  firebase_auth: ^5.6.0 # Versi terbaru
+  http: ^1.2.0
+  mailer: ^5.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_svg: ^2.0.10+1
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -60,9 +69,39 @@ flutter:
      - assets/png/cipayung.png
      - assets/png/cikarang.png
      - assets/png/Untitled.png
-     - assets/svg/herooo.svg
+     - assets/svg/Heroo.svg
      - assets/png/kuningan.png
      - assets/png/toilet.png
+     - assets/png/kelazmerah.png
+     - assets/png/perpusmerah.png
+     - assets/png/Toilet.png
+     - assets/png/Perpustakaan.png
+     - assets/png/Kantin.png
+     - assets/png/Masjid.png
+     - assets/png/Communal.png
+     - assets/png/Lift.png
+     - assets/png/Tangga.png
+     - assets/png/EmergencyExit.png
+     - assets/png/Parkir.png
+     - assets/png/PosSecurity.png
+     - assets/png/LabKom.png
+     - assets/png/LabGame.png
+     - assets/png/LabDesign.png
+     - assets/png/LabPhoto.png
+     - assets/png/Rektorat.png
+     - assets/png/Prodi.png
+     - assets/png/RuangRapat.png
+     - assets/png/Tendik.png
+     - assets/png/Humas.png
+     - assets/png/TU.png
+     - assets/png/Gudang.png
+     - assets/png/Janitor.png
+     - assets/png/bgprofil.png
+     - assets/png/akunprofil.png
+     - assets/png/edit.png
+     - assets/png/tprachmat.png
+     - assets/png/ucup.png
+     - assets/png/DenahA21.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
