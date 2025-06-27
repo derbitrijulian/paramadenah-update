@@ -1,7 +1,50 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-class FasilitasPage extends StatelessWidget {
+class FasilitasPage extends StatefulWidget {
   const FasilitasPage({super.key});
+
+  @override
+  _FasilitasPageState createState() => _FasilitasPageState();
+}
+
+class _FasilitasPageState extends State<FasilitasPage> {
+  final DatabaseReference _database = FirebaseDatabase.instance.ref();
+  Map<String, List<Map<dynamic, dynamic>>> facilitiesByCategory = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchFacilities();
+  }
+
+  void _fetchFacilities() {
+    _database.child('fasilitas').onValue.listen((event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>?;
+      if (data != null) {
+        setState(() {
+          facilitiesByCategory.clear();
+          data.forEach((categoryKey, categoryValue) {
+            if (categoryValue is Map) {
+              facilitiesByCategory[categoryKey] = (categoryValue as Map<dynamic, dynamic>).entries.map((entry) {
+                final facilityData = entry.value as Map<dynamic, dynamic>? ?? {};
+                return {
+                  'name': facilityData['name'] ?? entry.key, // Gunakan key jika name tidak ada
+                  'imageUrl': facilityData['imageUrl'] ?? '', // Default kosong jika tidak ada
+                  'category': categoryKey,
+                };
+              }).toList();
+            }
+          });
+        });
+      } else {
+        setState(() {
+          facilitiesByCategory.clear(); // Kosongkan jika data tidak ada
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +54,6 @@ class FasilitasPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
               Padding(
                 padding: const EdgeInsets.all(32.0),
                 child: Row(
@@ -19,14 +61,11 @@ class FasilitasPage extends StatelessWidget {
                   children: [
                     IconButton(
                       icon: Image.asset('assets/png/Untitled.png', width: 30, height: 30),
-                      onPressed: () {
-                        // Search logic
-                      },
+                      onPressed: () {},
                     ),
                   ],
                 ),
               ),
-              // Title
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32.0),
                 child: Column(
@@ -51,45 +90,20 @@ class FasilitasPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              // Sections
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 32.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildSection('FASILITAS UMUM', [
-                          _buildFacilityItem('png/Toilet_biru.png', 'Toilet'),
-                          _buildFacilityItem('png/Perpustakaan.png', 'Library'),
-                          _buildFacilityItem('png/Kantin.png', 'Kantin'),
-                          _buildFacilityItem('png/Masjid.png', 'Mushola'),
-                          _buildFacilityItem('png/Communal.png', 'Taman'),
-                          _buildFacilityItem('png/Lift.png', 'Lift'),
-                          _buildFacilityItem('png/Tangga.png', 'Tangga'),
-                          _buildFacilityItem('png/EmergencyExit.png', 'Emergency'),
-                          _buildFacilityItem('png/Parkir.png', 'Parkir'),
-                          _buildFacilityItem('png/PosSecurity.png', 'Security'),
-                        ]),
-                        _buildSection('LAB KELAS', [
-                          _buildFacilityItem('png/LabKom.png', 'Komputer'),
-                          _buildFacilityItem('png/LabGame.png', 'Lab.Game'),
-                          _buildFacilityItem('png/LabDesign.png', 'Design'),
-                          _buildFacilityItem('png/LabPhoto.png', 'Photo'),
-                        ]),
-                        _buildSection('RUANG KANTOR', [
-                          _buildFacilityItem('png/Rektorat.png', 'Rektorat'),
-                          _buildFacilityItem('png/Prodi.png', 'Prodi'),
-                          _buildFacilityItem('png/RuangRapat.png', 'R.Rapat'),
-                          _buildFacilityItem('png/Tendik.png', 'Tendik'),
-                          _buildFacilityItem('png/Humas.png', 'Humas'),
-                          _buildFacilityItem('png/TU.png', 'Tata Usaha'),
-                        ]),
-                        _buildSection('FASILITAS LAINNYA', [
-                          _buildFacilityItem('png/Gudang.png', 'Gudang'),
-                          _buildFacilityItem('png/Janitor.png', 'Janitor'),
-                        ]),
-                      ],
+                      children: facilitiesByCategory.entries.map((entry) {
+                        return _buildSection(entry.key.toUpperCase(), entry.value.map((facility) {
+                          return _buildFacilityItem(
+                            facility['imageUrl'],
+                            facility['name'],
+                          );
+                        }).toList());
+                      }).toList(),
                     ),
                   ),
                 ),
@@ -129,13 +143,13 @@ class FasilitasPage extends StatelessWidget {
     );
   }
 
-  Widget _buildFacilityItem(String iconPath, String label) {
+  Widget _buildFacilityItem(String imageUrl, String label) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           width: 82,
-          height: 100, // Increased height to accommodate text
+          height: 100,
           decoration: BoxDecoration(
             color: const Color(0xFF075A8E),
             borderRadius: BorderRadius.circular(8),
@@ -145,10 +159,13 @@ class FasilitasPage extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Image.asset(
-                  iconPath,
+                child: Image.network(
+                  imageUrl,
                   width: 48,
                   height: 48,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(Icons.error, color: Colors.white);
+                  },
                 ),
               ),
               const SizedBox(height: 4),
