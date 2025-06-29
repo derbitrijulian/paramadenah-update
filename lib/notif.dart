@@ -1,33 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class NotifPage extends StatelessWidget {
   const NotifPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final DatabaseReference _databaseReference = FirebaseDatabase.instance.ref().child('notifications');
+
     return Scaffold(
       body: Stack(
         children: [
-          // Background Content
           SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Notification List
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(32, 160, 32, 16), // Adjusted padding to avoid overlap with header
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: 3,
-                    itemBuilder: (context, index) {
-                      return _buildNotificationItem(
-                        context,
-                        index == 0 ? 'png/toilet.png' :
-                        index == 1 ? 'png/kelazmerah.png' : 'png/perpusmerah.png',
-                        index == 0 ? 'Toilet Gedung C dan D sedang dalam perbaikan untuk sementara gunakan toilet Gedung A.' :
-                        index == 1 ? 'Kelas H.JUSUF KALLA D2-6 sedang mengalami kerusakan , untuk sementara kelas dipindahkan ke H. JUSUF KALLA D1-5.' :
-                        'Kami mengingatkan bahwa batas waktu pengembalian buku Tanggal: 20 September 2025 Pastikan untuk mengembalikan buku pinjam tepat waktu',
+                  padding: const EdgeInsets.fromLTRB(32, 160, 32, 16),
+                  child: StreamBuilder(
+                    stream: _databaseReference.onValue,
+                    builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError) {
+                        return const Center(child: Text('Terjadi kesalahan saat memuat data'));
+                      }
+                      if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
+                        return const Center(child: Text('Tidak ada data tersedia'));
+                      }
+
+                      final data = snapshot.data!.snapshot.value as Map<dynamic, dynamic>;
+                      List<MapEntry<dynamic, dynamic>> notifications = data.entries.toList();
+
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: notifications.length,
+                        itemBuilder: (context, index) {
+                          final notification = notifications[index].value as Map<dynamic, dynamic>;
+                          return _buildNotificationItem(
+                            context,
+                            notification['iconUrl'] ?? '',
+                            notification['message'] ?? '',
+                            notification['name'] ?? '',
+                          );
+                        },
                       );
                     },
                   ),
@@ -35,7 +53,7 @@ class NotifPage extends StatelessWidget {
               ],
             ),
           ),
-          // Header
+          // Header dan Judul Halaman (tidak berubah)
           Positioned(
             top: 32,
             right: 32,
@@ -45,13 +63,10 @@ class NotifPage extends StatelessWidget {
               elevation: 2,
               child: IconButton(
                 icon: Image.asset('assets/png/Untitled.png', width: 20, height: 20),
-                onPressed: () {
-                  // Tambahkan logika pencarian di sini
-                },
+                onPressed: () {},
               ),
             ),
           ),
-          // Page Title
           Positioned(
             top: 80,
             left: 32,
@@ -61,7 +76,7 @@ class NotifPage extends StatelessWidget {
                 Text(
                   'NOTIFIKASI',
                   style: TextStyle(
-                    color: const Color(0xFF075A8E),
+                    color: Color(0xFF075A8E),
                     fontSize: 32,
                     fontWeight: FontWeight.w600,
                   ),
@@ -82,7 +97,7 @@ class NotifPage extends StatelessWidget {
     );
   }
 
-  Widget _buildNotificationItem(BuildContext context, String iconPath, String text) {
+  Widget _buildNotificationItem(BuildContext context, String iconUrl, String message, String name) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(16),
@@ -93,15 +108,16 @@ class NotifPage extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Image.asset(
-            iconPath,
+          Image.network(
+            iconUrl,
             width: 30,
             height: 30,
+            errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Text(
-              text,
+              '$name: $message',
               style: const TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
