@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import '../services/auth.dart'; // Impor AuthService
-import '../auth/auth_page.dart'; // Impor AuthPage
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth.dart';
 
 class AkunPage extends StatelessWidget {
   const AkunPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Get current user from Firebase
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    // Extract username from email (before @) if displayName is null
+    final String username = user?.displayName ?? user?.email?.split('@')[0] ?? 'unknown';
+
     return Scaffold(
       body: Container(
         color: Colors.blue[100], // Equivalent to bg-blue-100
@@ -22,7 +28,7 @@ class AkunPage extends StatelessWidget {
             // Profile Content Overlay
             Positioned(
               top: 80,
-              left: 80, // Adjusted to match the design
+              left: 115, // Adjusted to match the design
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -61,29 +67,17 @@ class AkunPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 32),
-                  const Text(
-                    'JAGUAR NEON',
-                    style: TextStyle(
+                  Text(
+                    username,
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
                   ),
-                  const Text(
-                    '1234567890',
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                  const Text(
-                    'Desain Komunikasi Visual',
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                  const Text(
-                    'jaguarneon@students.paramadina.ac.id',
-                    style: TextStyle(
+                  Text(
+                    user?.email ?? 'jaguarneon@students.paramadina.ac.id',
+                    style: const TextStyle(
                       fontSize: 14,
                     ),
                   ),
@@ -106,7 +100,11 @@ class AkunPage extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            // Ubah Password logic
+                            // Show dialog for password change
+                            showDialog(
+                              context: context,
+                              builder: (context) => ChangePasswordDialog(),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
@@ -156,6 +154,138 @@ class AkunPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+// New widget for password change dialog
+class ChangePasswordDialog extends StatefulWidget {
+  @override
+  _ChangePasswordDialogState createState() => _ChangePasswordDialogState();
+}
+
+class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
+  final _formKey = GlobalKey<FormState>();
+  final _newPasswordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  final _currentPasswordController = TextEditingController(); // New field for current password
+  String? _errorMessage;
+
+  @override
+  void dispose() {
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    _currentPasswordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _reAuthenticateAndChangePassword() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null && user.email != null) {
+          // Re-authenticate user
+          final credential = EmailAuthProvider.credential(
+            email: user.email!,
+            password: _currentPasswordController.text,
+          );
+          await user.reauthenticateWithCredential(credential);
+
+          // Update password after successful re-authentication
+          await user.updatePassword(_newPasswordController.text);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Password berhasil diubah')),
+          );
+          Navigator.of(context).pop();
+        }
+      } catch (e) {
+        setState(() {
+          _errorMessage = 'Gagal mengubah password: ${e.toString()}';
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Ubah Password'),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: _currentPasswordController,
+              decoration: const InputDecoration(
+                labelText: 'Password Saat Ini',
+                border: OutlineInputBorder(),
+              ),
+              obscureText: true,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Masukkan password saat ini';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _newPasswordController,
+              decoration: const InputDecoration(
+                labelText: 'Password Baru',
+                border: OutlineInputBorder(),
+              ),
+              obscureText: true,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Masukkan password baru';
+                }
+                if (value.length < 6) {
+                  return 'Password harus minimal 6 karakter';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _confirmPasswordController,
+              decoration: const InputDecoration(
+                labelText: 'Konfirmasi Password',
+                border: OutlineInputBorder(),
+              ),
+              obscureText: true,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Masukkan konfirmasi password';
+                }
+                if (value != _newPasswordController.text) {
+                  return 'Password tidak cocok';
+                }
+                return null;
+              },
+            ),
+            if (_errorMessage != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  _errorMessage!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Batal'),
+        ),
+        ElevatedButton(
+          onPressed: _reAuthenticateAndChangePassword,
+          child: const Text('Simpan'),
+        ),
+      ],
     );
   }
 }
