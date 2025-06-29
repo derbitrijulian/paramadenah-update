@@ -8,7 +8,7 @@ class RoomDetailPage extends StatefulWidget {
   final String roomId;
   final String lantai;
 
-  const RoomDetailPage({super.key, required this.gedungName, required this.roomId, required this.lantai});
+  const RoomDetailPage({super.key, required this.gedungName, required this.lantai, required this.roomId});
 
   @override
   State<RoomDetailPage> createState() => _RoomDetailPageState();
@@ -21,9 +21,11 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
   @override
   void initState() {
     super.initState();
-    _databaseReference = FirebaseDatabase.instance.ref().child('gedung').child(widget.gedungName).child('kelas').child('lantai_${widget.lantai}').child(widget.roomId);
+    // Pastikan lantai memiliki prefiks 'lantai_' jika belum ada
+    final formattedLantai = widget.lantai.startsWith('lantai_') ? widget.lantai : 'lantai_${widget.lantai}';
+    _databaseReference = FirebaseDatabase.instance.ref().child('gedung').child(widget.gedungName).child('kelas').child(formattedLantai).child(widget.roomId);
     print('Database Reference: $_databaseReference'); // Debugging path
-    print('Parameters - gedungName: ${widget.gedungName}, lantai: ${widget.lantai}, roomId: ${widget.roomId}'); // Debugging parameters
+    print('Parameters - gedungName: ${widget.gedungName}, lantai: ${widget.lantai}, roomId: ${widget.roomId}, formattedLantai: $formattedLantai'); // Debugging parameters
   }
 
   @override
@@ -86,6 +88,9 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
             final roomData = snapshot.data!.snapshot.value as Map<dynamic, dynamic>? ?? {};
             print('Raw Room Data: $roomData'); // Debugging data mentah
             print('Snapshot Key: ${snapshot.data!.snapshot.key}'); // Debugging node yang diakses
+            if (roomData.isEmpty) {
+              print('No data found at this path: $_databaseReference');
+            }
 
             final codeKelas = roomData['code_kelas'] as String? ?? 'Unknown Room';
             final kapasitasOrang = roomData['kapasitas_orang'] as int? ?? 0;

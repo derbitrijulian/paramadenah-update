@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'widgets/bottom_nav_bar.dart';
-import 'room_detail_page.dart'; // Impor halaman detail ruangan
+import 'room_detail_page.dart';
 
 class RoomListPage extends StatefulWidget {
   final String gedungName;
@@ -16,15 +16,15 @@ class _RoomListPageState extends State<RoomListPage> with SingleTickerProviderSt
   int _selectedIndex = 0;
   late TabController _tabController;
   late DatabaseReference _databaseReference;
-  late DatabaseReference _gedungReference; // Referensi untuk mengambil image gedung
+  late DatabaseReference _gedungReference;
 
   @override
   void initState() {
     super.initState();
     _databaseReference = FirebaseDatabase.instance.ref().child('gedung').child(widget.gedungName).child('kelas');
-    _gedungReference = FirebaseDatabase.instance.ref().child('gedung').child(widget.gedungName); // Untuk mengambil image
-    _tabController = TabController(length: 3, vsync: this); // 3 lantai
-    print('Initialized RoomListPage with gedungName: ${widget.gedungName}'); // Debugging
+    _gedungReference = FirebaseDatabase.instance.ref().child('gedung').child(widget.gedungName);
+    _tabController = TabController(length: 3, vsync: this);
+    print('Initialized RoomListPage with gedungName: ${widget.gedungName}');
   }
 
   @override
@@ -176,11 +176,11 @@ class _RoomListPageState extends State<RoomListPage> with SingleTickerProviderSt
             stream: _gedungReference.onValue,
             builder: (context, gedungSnapshot) {
               if (!gedungSnapshot.hasData || gedungSnapshot.connectionState == ConnectionState.waiting) {
-                print('Loading gedung image: ${gedungSnapshot.connectionState}'); // Debugging
+                print('Loading gedung image: ${gedungSnapshot.connectionState}');
                 return const Center(child: CircularProgressIndicator());
               }
               if (gedungSnapshot.hasError) {
-                print('Gedung Image Error: ${gedungSnapshot.error}'); // Debugging error
+                print('Gedung Image Error: ${gedungSnapshot.error}');
                 return Center(child: Text('Error loading gedung image: ${gedungSnapshot.error}'));
               }
 
