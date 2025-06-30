@@ -196,12 +196,6 @@ class _RoomListPageState extends State<RoomListPage> with SingleTickerProviderSt
                         Navigator.pushReplacementNamed(context, '/kampus_cipayung');
                       },
                     ),
-                    actions: [
-                      IconButton(
-                        icon: Image.asset('png/Untitled.png', width: 30, height: 30),
-                        onPressed: () {},
-                      ),
-                    ],
                     title: Text(
                       widget.gedungName,
                       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
