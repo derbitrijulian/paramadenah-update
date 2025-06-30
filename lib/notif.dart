@@ -61,10 +61,6 @@ class NotifPage extends StatelessWidget {
               color: Colors.white,
               borderRadius: BorderRadius.circular(4),
               elevation: 2,
-              child: IconButton(
-                icon: Image.asset('assets/png/Untitled.png', width: 20, height: 20),
-                onPressed: () {},
-              ),
             ),
           ),
           Positioned(

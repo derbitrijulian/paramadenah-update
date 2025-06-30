@@ -59,10 +59,6 @@ class _FasilitasPageState extends State<FasilitasPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    IconButton(
-                      icon: Image.asset('assets/png/Untitled.png', width: 30, height: 30),
-                      onPressed: () {},
-                    ),
                   ],
                 ),
               ),
